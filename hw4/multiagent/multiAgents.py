@@ -133,6 +133,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
             Returns the total number of agents in the game
         """
         "*** YOUR CODE HERE ***"
+        '''
         numAgent = gameState.getNumAgents()
         for dep in MultiAgentSearchAgent.depth:
             gameState.generateSuccessor(agentIndex, action)
@@ -146,6 +147,41 @@ class MinimaxAgent(MultiAgentSearchAgent):
     def value(state):
         v = float("inf")
         for
+        '''
+
+        def maxvalue(gameState, depth, numghosts):
+            if gameState.isWin() or gameState.isLose() or depth == 0:
+                return self.evaluationFunction(gameState)
+            v = -(float("inf"))
+            legalActions = gameState.getLegalActions(0)
+            for action in legalActions:
+                v = max(v, minvalue(gameState.generateSuccessor(0, action), depth-1, 1, numghosts))
+            return v
+
+        def minvalue(gameState, depth, agentIndex, numghosts):
+            if gameState.isWin() or gameState.isLose() or depth == 0:
+                return self.evaluationFunction(gameState)
+            v = float("inf")
+            legalActions = gameState.getLegalActions(agentIndex)
+            if agentIndex == numghosts:
+                for action in legalActions:
+                    v = min(v, maxvalue(gameState.generateSuccessor(agentIndex, action), depth-1, numghosts))
+            else:
+                for action in legalActions:
+                    v = min(v, minvalue(gameState.generateSuccessor(agentIndex, action), depth, agentIndex+1, numghosts))
+            return v
+
+        legalActions = gameState.getLegalActions()
+        numghosts = gameState.getNumAgents() - 1
+        bestaction = Directions.STOP
+        score = -(float("inf"))
+        for action in legalActions:
+            nextState = gameState.generateSuccessor(0, action)
+            prevscore = score
+            score = max(score, minvalue(nextState, self.depth, 1, numghosts))
+            if score > prevscore:
+                bestaction = action
+        return bestaction
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
