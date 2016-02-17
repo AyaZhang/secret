@@ -43,6 +43,7 @@ class ReflexAgent(Agent):
         #print 'legalMoves',legalMoves
         # Choose one of the best actions
         scores = [self.evaluationFunction(gameState, action) for action in legalMoves]
+        print (scores)
         bestScore = max(scores)
         bestIndices = [index for index in range(len(scores)) if scores[index] == bestScore]
         chosenIndex = random.choice(bestIndices) # Pick randomly among the best
@@ -70,7 +71,9 @@ class ReflexAgent(Agent):
         successorGameState = currentGameState.generatePacmanSuccessor(action)
         newPos = successorGameState.getPacmanPosition()
         newFood = successorGameState.getFood()
+        newCapsule = successorGameState.getCapsules()
         newGhostStates = successorGameState.getGhostStates()
+        newGhostPos = successorGameState.getGhostPositions()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
@@ -78,7 +81,41 @@ class ReflexAgent(Agent):
         #print 'newFood',newFood
         #print 'newGhostStates',newGhostStates
         #print 'newScaredTimes', newScaredTimes
-        return successorGameState.getScore()
+
+        # whether the game will end
+        if successorGameState.isLose():
+          return -float('inf')
+
+        if successorGameState.isWin():
+          return float('inf')
+
+        # find the distance between pacman and the nearest food
+        food_dist = min([manhattanDistance(i, newPos) for i in newFood.asList()])
+        if successorGameState.getNumFood() < currentGameState.getNumFood():
+          food_dist = 0
+
+        # award for eating capsule
+        award = 0
+        if len(newCapsule) > 0:
+          capsule_dist = min([manhattanDistance(i, newPos) for i in newCapsule])
+          if capsule_dist < 5:
+            award += 5 - capsule_dist
+
+        if len(newCapsule) < len(currentGameState.getCapsules()):
+          award += 10
+
+        # find the distance between pacman and the nearest enemy
+        enemy_dists = []
+        for i in newGhostStates:
+          distance = manhattanDistance(i.getPosition(), newPos)
+          enemy_dists.append(i.scaredTimer + distance)
+     
+        enemy_dist = min(enemy_dists)
+
+        if enemy_dist > 10:
+          enemy_dist = 11
+
+        return -food_dist + enemy_dist + award
 
 def scoreEvaluationFunction(currentGameState):
     """
