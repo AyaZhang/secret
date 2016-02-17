@@ -68,6 +68,9 @@ class ReflexAgent(Agent):
         """
         # Useful information you can extract from a GameState (pacman.py)
         successorGameState = currentGameState.generatePacmanSuccessor(action)
+        #print 'successorGameState', successorGameState
+        #print type(successorGameState)
+        #print 'numOfAgents',successorGameState.getNumAgents
         newPos = successorGameState.getPacmanPosition()
         newFood = successorGameState.getFood()
         newGhostStates = successorGameState.getGhostStates()
@@ -133,19 +136,46 @@ class MinimaxAgent(MultiAgentSearchAgent):
             Returns the total number of agents in the game
         """
         "*** YOUR CODE HERE ***"
+        #util.raiseNotDefined()  ##?
+        #github
         numAgent = gameState.getNumAgents()
-        for dep in MultiAgentSearchAgent.depth:
-            gameState.generateSuccessor(agentIndex, action)
-            # Collect legal moves and successor states
-            legalMoves = gameState.getLegalActions()
-        
-        return legalMoves[chosenIndex]
-        
-        util.raiseNotDefined()  ##?
+        numGhosts = numAgent - 1
+        legalMoves = getLegalActions()
+        score = -(float("inf"))
+        for action in legalMoves:
+            successor = gameState.generateSuccessor(0,action)
+            temScore = score
+            score = max(temScore)
 
-    def value(state):
-        v = float("inf")
-        for
+    def minValue(gameState,curAgentIndex,curDepth, numGhosts)
+        if gameState.isWin() or gameState.isLose() or depth == 0:
+            return self.evaluationFunction(gameState)  #?
+        
+        if not gameState.getLegalActions(curAgentIndex):
+            return
+        
+        v = -(float("inf"))
+        legalMoves = gameState.getLegalActions(curAgentIndex)
+        if curAgentIndex == numGhosts:
+            for action in legalMoves:
+                v = min(v,maxValue(gameState.generateSuccessor(curAgentIndex, action),curDepth - 1, numGhosts))
+        else:
+            for action in legalMoves:
+                v = min(v,minValue(gameState.generateSuccessor(curAgentIndex,action),curAgentIndex + 1, curDepth, numGhosts))
+        return v
+
+    def maxValue(gameState,curAgentIndex,curDepth,numGhosts)
+        if gameState.isWin() or gameState.isLose() or depth == 0:
+            return self.evaluationFunction(gameState)  #?
+        
+        if not gameState.getLegalActions(curAgentIndex):
+            return
+            
+        v = -(float("inf"))
+        legalMoves = gameState.getLegalActions(curAgentIndex)
+        for action in legalMoves
+            v = max(v,minValue(gameState.generateSuccessor(curAgentIndex, action),  1, curDepth - 1, numGhosts))
+
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
