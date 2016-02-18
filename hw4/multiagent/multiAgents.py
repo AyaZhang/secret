@@ -179,22 +179,22 @@ class MinimaxAgent(MultiAgentSearchAgent):
                 result = action
         return result
 
-    def min_value(self,gameState, curAgentindex, curDepth):
+    def min_value(self,gameState, curAgentIndex, curDepth):
         v = float("inf")
-        legalActions = gameState.getLegalActions(curAgentindex)
+        legalActions = gameState.getLegalActions(curAgentIndex)
         numGhosts = gameState.getNumAgents() - 1
         
         if gameState.isWin() or gameState.isLose() or curDepth == 0:
             return self.evaluationFunction(gameState)
         
-        if curAgentindex == numGhosts:
+        if curAgentIndex == numGhosts:
             for action in legalActions:
-                nextState = gameState.generateSuccessor(curAgentindex, action)
+                nextState = gameState.generateSuccessor(curAgentIndex, action)
                 v = min(v, self.max_value(nextState, 0, curDepth - 1))
         else:
             for action in legalActions:
-                nextState = gameState.generateSuccessor(curAgentindex, action)
-                v = min(v, self.min_value(nextState, curAgentindex + 1, curDepth))
+                nextState = gameState.generateSuccessor(curAgentIndex, action)
+                v = min(v, self.min_value(nextState, curAgentIndex + 1, curDepth))
         return v
 
     def max_value(self, gameState, curAgentIndex, curDepth):
