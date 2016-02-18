@@ -178,8 +178,14 @@ class MinimaxAgent(MultiAgentSearchAgent):
             if score > prevScore:
                 result = action
         return result
+    
+    def get_value(self, gameState, curAgentIndex, curDepth):
+        if curAgentIndex == 0:
+            return self.max_value(gameState, curAgentIndex, curDepth)
+        else:
+            return self.min_value(gameState, curAgentIndex, curDepth)
 
-    def min_value(self,gameState, curAgentIndex, curDepth):
+    def min_value(self, gameState, curAgentIndex, curDepth):
         v = float("inf")
         legalActions = gameState.getLegalActions(curAgentIndex)
         numGhosts = gameState.getNumAgents() - 1
@@ -190,11 +196,11 @@ class MinimaxAgent(MultiAgentSearchAgent):
         if curAgentIndex == numGhosts:
             for action in legalActions:
                 nextState = gameState.generateSuccessor(curAgentIndex, action)
-                v = min(v, self.max_value(nextState, 0, curDepth - 1))
+                v = min(v, self.get_value(nextState, 0, curDepth-1))
         else:
             for action in legalActions:
                 nextState = gameState.generateSuccessor(curAgentIndex, action)
-                v = min(v, self.min_value(nextState, curAgentIndex + 1, curDepth))
+                v = min(v, self.get_value(nextState, curAgentIndex+1, curDepth))
         return v
 
     def max_value(self, gameState, curAgentIndex, curDepth):
@@ -207,9 +213,8 @@ class MinimaxAgent(MultiAgentSearchAgent):
         
         for action in legalActions:
             nextState = gameState.generateSuccessor(curAgentIndex, action)
-            v = max(v, self.min_value(nextState, 1, curDepth))
+            v = max(v, self.get_value(nextState, 1, curDepth))
         return v
-
 
 
 
@@ -255,77 +260,4 @@ def betterEvaluationFunction(currentGameState):
 # Abbreviation
 better = betterEvaluationFunction
 
-
-
-"""
-    numAgent = gameState.getNumAgents()
-    iniScore = -(float("inf"))
-    numGhosts = numAgent - 1
-    score = self.maxValue(gameState, 0, self.depth, numGhosts)
-    print score
-    return score
-    
-    def minValue(gameState,curAgentIndex,curDepth, numGhosts):
-    if gameState.isWin() or gameState.isLose() or curDepth == 0:
-    return self.evaluationFunction(gameState,None)
-    
-    v = -(float("inf"))
-    legalMoves = gameState.getLegalActions(curAgentIndex)
-    if curAgentIndex == numGhosts:
-    for action in legalMoves:
-    nextState = gameState.generateSuccessor(curAgentIndex, action)
-    v = min(v,maxValue(nextState, 0, curDepth - 1, numGhosts))
-    else:
-    for action in legalMoves:
-    nextState = gameState.generateSuccessor(curAgentIndex,action)
-    v = min(v,minValue(nextState,curAgentIndex + 1, curDepth, numGhosts))
-    return v
-    
-    def maxValue(gameState,curAgentIndex,curDepth,numGhosts):
-    if gameState.isWin() or gameState.isLose() or curDepth == 0:
-    return self.evaluationFunction(gameState,None)
-    
-    v = -(float("inf"))
-    legalMoves = gameState.getLegalActions(curAgentIndex)
-    for action in legalMoves:
-    nextState = gameState.generateSuccessor(curAgentIndex,action)
-    v = max(v,minValue(nextState, 1, curDepth - 1, numGhosts))
-    return v
-    """
-
-
-#iniDepth = 0
-#iniAgentIndex = 0
-#result = self.getValue(gameState,iniAgentIndex,iniDepth)
-#return result
-
-"""
-    def getValue(self,gameState,agentIndex,curDepth):
-    tempScore = -(float("inf"))
-    numGhosts = gameState.getNumAgents() - 1
-    
-    if curDepth == self.depth:
-    return self.evaluationFunction(gameState)
-    if agentIndex == 0:
-    return self.maxvalue(gameState,curDepth,numGhosts)
-    else:
-    return self.minvalue(gameState,curDepth,agentIndex,numGhosts)
-"""
-"""
-    def minvalue(self, gameState, curAgentIndex, curDepth, numGhosts):
-    v = float("inf")
-    legalActions = gameState.getLegalActions(curAgentIndex)
-    #numGhosts = gameState.getNumAgents() - 1
-    
-    if gameState.isWin() or gameState.isLose() or curDepth == 0:
-    return self.evaluationFunction(gameState)
-    
-    if curAgentIndex == numGhosts:
-    for action in legalActions:
-    v = min(v, self.maxvalue(gameState.generateSuccessor(curAgentIndex, action), curDepth-1, numGhosts))
-    else:
-    for action in legalActions:
-    v = min(v, self.minvalue(gameState.generateSuccessor(curAgentIndex, action), curAgentIndex+1, curDepth, numGhosts))
-    return v
-"""
 
