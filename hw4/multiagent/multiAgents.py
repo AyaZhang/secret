@@ -43,7 +43,6 @@ class ReflexAgent(Agent):
         #print 'legalMoves',legalMoves
         # Choose one of the best actions
         scores = [self.evaluationFunction(gameState, action) for action in legalMoves]
-        print (scores)
         bestScore = max(scores)
         bestIndices = [index for index in range(len(scores)) if scores[index] == bestScore]
         chosenIndex = random.choice(bestIndices) # Pick randomly among the best
@@ -95,14 +94,14 @@ class ReflexAgent(Agent):
           food_dist = 0
 
         # award for eating capsule
-        award = 0
         if len(newCapsule) > 0:
           capsule_dist = min([manhattanDistance(i, newPos) for i in newCapsule])
-          if capsule_dist < 5:
-            award += 5 - capsule_dist
+          award = 5 - capsule_dist if capsule_dist < 5 else 0
+        else:
+          award = 0
 
         if len(newCapsule) < len(currentGameState.getCapsules()):
-          award += 10
+          award = 10
 
         # find the distance between pacman and the nearest enemy
         enemy_dists = []
