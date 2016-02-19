@@ -199,7 +199,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
             for action in legalActions:
                 nextState = gameState.generateSuccessor(curAgentIndex, action)
                 v = min(v, self.get_value(nextState, 0, curDepth-1))
-                #print 'v',v
+                #print 'v1',v
         else:
             for action in legalActions:
                 nextState = gameState.generateSuccessor(curAgentIndex, action)
@@ -336,13 +336,16 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
             return self.min_value(gameState, curAgentIndex, curDepth)
                 
     def min_value(self, gameState, curAgentIndex, curDepth):
-        v = float("inf")
+        #v = float("inf")
+        v = 0
         legalActions = gameState.getLegalActions(curAgentIndex)
-        #print len(legalActions)
+        #print 'len',len(legalActions)
         numGhosts = gameState.getNumAgents() - 1
+        
         if len(legalActions) != 0:
-            prob = float(1/len(legalActions))
+            prob = 1/float(len(legalActions))
         else: prob = 1
+        #print 'prob',prob
         
         if gameState.isWin() or gameState.isLose() or curDepth == 0:
             return self.evaluationFunction(gameState)
@@ -352,13 +355,14 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
             for action in legalActions:
                 nextState = gameState.generateSuccessor(curAgentIndex, action)
                 value = self.get_value(nextState, 0, curDepth-1)
-                v = min(v, float(prob* value))
-                #print 'v',v
+                v = v + float(prob* value)
+                #print 'v1',v
         else:
             for action in legalActions:
                 nextState = gameState.generateSuccessor(curAgentIndex, action)
                 value = self.get_value(nextState, curAgentIndex+1, curDepth)
-                v = min(v, float(prob*value))
+                v = v + float(prob*value)
+                #print 'v', v
         return v
     
     def max_value(self, gameState, curAgentIndex, curDepth):
