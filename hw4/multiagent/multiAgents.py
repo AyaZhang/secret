@@ -384,7 +384,12 @@ def betterEvaluationFunction(currentGameState):
       Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
       evaluation function (question 5).
 
-      DESCRIPTION: <write something here so we know what you did>
+      DESCRIPTION: features of the evaluation function includes 
+        food_count - how many food are left
+        capsule_count - how many capsules are left
+        food_dist - distance to the nearest food
+        award - extra points if the pacman is close to a capsule
+        enemy_dist - distance to the nearest enemy
     """
     "*** YOUR CODE HERE ***"
     curPos = currentGameState.getPacmanPosition()
