@@ -407,7 +407,8 @@ def betterEvaluationFunction(currentGameState):
 
     # find the distance between pacman and the nearest food
     food_dist = min([manhattanDistance(i, curPos) for i in curFood.asList()])
-    print(food_dist)
+    if (food_count < 2):
+      food_dist = 0
 
     # award for eating capsule
     if len(curCapsule) > 0:
@@ -427,7 +428,7 @@ def betterEvaluationFunction(currentGameState):
     if enemy_dist > 11:
         enemy_dist = 10
 
-    return currentGameState.getScore() - food_dist - 20.0/enemy_dist + 3.5 * award + 500.0/(food_count+1) + 1000.0 / (capsule_count + 1)
+    return currentGameState.getScore() - food_dist - 50.0/enemy_dist + 5 * award + 100.0/(food_count + 1) + 200.0 / (capsule_count + 1)
 
 # Abbreviation
 better = betterEvaluationFunction
