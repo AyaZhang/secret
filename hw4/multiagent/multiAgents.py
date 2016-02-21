@@ -14,7 +14,7 @@
 
 from util import manhattanDistance
 from game import Directions
-import random, util
+import random, util, math
 
 from game import Agent
 
@@ -387,7 +387,47 @@ def betterEvaluationFunction(currentGameState):
       DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    curPos = currentGameState.getPacmanPosition()
+    curFood = currentGameState.getFood()
+    curCapsule = currentGameState.getCapsules()
+    curGhostStates = currentGameState.getGhostStates()
+    curGhostPos = currentGameState.getGhostPositions()
+    curScaredTimes = [ghostState.scaredTimer for ghostState in curGhostStates]
+
+    # additional features
+    food_count = currentGameState.getNumFood()
+    capsule_count = len(currentGameState.getCapsules())
+
+    # whether the game will end
+    if currentGameState.isLose():
+      return -float('inf')
+
+    if currentGameState.isWin():
+      return float('inf')
+
+    # find the distance between pacman and the nearest food
+    food_dist = min([manhattanDistance(i, curPos) for i in curFood.asList()])
+    print(food_dist)
+
+    # award for eating capsule
+    if len(curCapsule) > 0:
+      capsule_dist = min([manhattanDistance(i, curPos) for i in curCapsule])
+      award = 5 - capsule_dist if capsule_dist < 5 else 0
+    else:
+      award = 0
+
+    # find the distance between pacman and the nearest enemy
+    enemy_dists = []
+    for i in curGhostStates:
+      distance = manhattanDistance(i.getPosition(), curPos)
+      enemy_dists.append(i.scaredTimer + distance)
+
+    enemy_dist = min(enemy_dists)
+
+    if enemy_dist > 11:
+        enemy_dist = 10
+
+    return currentGameState.getScore() - food_dist - 20.0/enemy_dist + 3.5 * award + 500.0/(food_count+1) + 1000.0 / (capsule_count + 1)
 
 # Abbreviation
 better = betterEvaluationFunction
