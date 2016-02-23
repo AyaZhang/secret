@@ -493,13 +493,14 @@ def betterEvaluationFunction(currentGameState):
     # find the distance between pacman and the nearest enemy
     enemy_dists = []
     for i in curGhostStates:
-      distance = manhattanDistance(i.getPosition(), curPos)
-      enemy_dists.append(i.scaredTimer + distance)
-    #print enemy_dists
-    enemy_dist = min(enemy_dists)
-# print type(enemy_dist)
-#enemy_dist ＝ min(enemy_dist,4)
+        distance = manhattanDistance(i.getPosition(), curPos)
+        enemy_dists.append(i.scaredTimer + distance)
 
+    enemy_dist = min(enemy_dists)
+    enemy_dist = max(enemy_dist,[4,4])
+    print enemy_dist
+    #print type(enemy_dist)
+    #print min(enemy_dist,4)
     if enemy_dist > 11:
         enemy_dist = 10
 
