@@ -40,6 +40,7 @@ class ReflexAgent(Agent):
         """
         # Collect legal moves and successor states
         legalMoves = gameState.getLegalActions()
+
         #print 'legalMoves',legalMoves
         # Choose one of the best actions
         scores = [self.evaluationFunction(gameState, action) for action in legalMoves]
@@ -275,7 +276,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             # If the score is already bigger than min's best option, return result move
             if score > beta: return result
             alpha = max(alpha, score)
-        
+
         return result
 
         
@@ -364,6 +365,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
           legal moves.
         """
         "*** YOUR CODE HERE ***"
+
         # Get all the legal actions to loop with later
         legalActions = gameState.getLegalActions()
         numGhosts = gameState.getNumAgents() - 1
@@ -376,10 +378,12 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
             prevScore = score
             # Call min with the first ghost index to update the score
             score = max(score, self.min_value(nextState, 1, self.depth))
+            print(action + str(score))
             # If the new score is better than the last one, update the action
             if score > prevScore:
-                result = action
-                    
+                if action != Directions.STOP:
+                    result = action
+
         return result
 
     def get_value(self, gameState, curAgentIndex, curDepth):
@@ -496,7 +500,13 @@ def betterEvaluationFunction(currentGameState):
     if enemy_dist > 11:
         enemy_dist = 10
 
-    return currentGameState.getScore() - food_dist - 50.0/enemy_dist + 5 * award + 100.0/(food_count + 1) + 200.0 / (capsule_count + 1)
+    length = curFood.width
+    length2 = curFood.height
+    constant = length + length2
+
+    size = length * length2
+
+    return currentGameState.getScore() - food_dist - constant * 1.0/enemy_dist + 5 * award + size * 2.0/(food_count + 1) + size * 3.0 / (capsule_count + 1)
 
 # Abbreviation
 better = betterEvaluationFunction
