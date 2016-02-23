@@ -482,6 +482,7 @@ def betterEvaluationFunction(currentGameState):
 
     enemy_dist = min(enemy_dists)
     
+
     if enemy_dist > 11:
         enemy_dist = 10
 
