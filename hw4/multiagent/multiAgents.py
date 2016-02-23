@@ -497,8 +497,7 @@ def betterEvaluationFunction(currentGameState):
         enemy_dists.append(i.scaredTimer + distance)
 
     enemy_dist = min(enemy_dists)
-    enemy_dist = max(enemy_dist,[4,4])
-    print enemy_dist
+    
     #print type(enemy_dist)
     #print min(enemy_dist,4)
     if enemy_dist > 11:
