@@ -339,30 +339,25 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         #v = float("inf")
         v = 0
         legalActions = gameState.getLegalActions(curAgentIndex)
-        #print 'len',len(legalActions)
         numGhosts = gameState.getNumAgents() - 1
         
         if len(legalActions) != 0:
             prob = 1/float(len(legalActions))
         else: prob = 1
-        #print 'prob',prob
         
         if gameState.isWin() or gameState.isLose() or curDepth == 0:
             return self.evaluationFunction(gameState)
 
         if curAgentIndex == numGhosts:
-            #print legalActions
             for action in legalActions:
                 nextState = gameState.generateSuccessor(curAgentIndex, action)
                 value = self.get_value(nextState, 0, curDepth-1)
                 v = v + float(prob* value)
-                #print 'v1',v
         else:
             for action in legalActions:
                 nextState = gameState.generateSuccessor(curAgentIndex, action)
                 value = self.get_value(nextState, curAgentIndex+1, curDepth)
                 v = v + float(prob*value)
-                #print 'v', v
         return v
     
     def max_value(self, gameState, curAgentIndex, curDepth):
@@ -433,7 +428,7 @@ def betterEvaluationFunction(currentGameState):
     if enemy_dist > 11:
         enemy_dist = 10
 
-    return currentGameState.getScore() - food_dist - 50.0/enemy_dist + 5 * award + 100.0/(food_count + 1) + 200.0 / (capsule_count + 1)
+    return currentGameState.getScore() - food_dist - 80.0/enemy_dist + 5 * award + 100.0/(food_count + 1) + 200.0 / (capsule_count + 1)
 
 # Abbreviation
 better = betterEvaluationFunction
