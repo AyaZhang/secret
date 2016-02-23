@@ -370,63 +370,77 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         result= Directions.STOP
         # Set score as negative infinite to updata later
         score = -(float("inf"))
-        #return self.maxvalue(gameState,self.depth,numGhosts)
+        # To start the game
         for action in legalActions:
             nextState = gameState.generateSuccessor(0, action)
             prevScore = score
+            # Call min with the first ghost index to update the score
             score = max(score, self.min_value(nextState, 1, self.depth))
             #self.max_value(gameState,0,self.depth+1)
+            # If the new score is better than the last one, update the action
             if score > prevScore:
                 result = action
         
         return result
 
     def get_value(self, gameState, curAgentIndex, curDepth):
+         # If current agent is Pacman, use max_value
         if curAgentIndex == 0:
             return self.max_value(gameState, curAgentIndex, curDepth)
+        # If current agents are ghosts, use min_value
         else:
             return self.min_value(gameState, curAgentIndex, curDepth)
                 
     def min_value(self, gameState, curAgentIndex, curDepth):
-        #v = float("inf")
+        # Set v as 0 to update later
         v = 0
         legalActions = gameState.getLegalActions(curAgentIndex)
-        #print 'len',len(legalActions)
         numGhosts = gameState.getNumAgents() - 1
         
+        # If length of legalActions is not 0, calculate the probablity
         if len(legalActions) != 0:
             prob = 1/float(len(legalActions))
+        # Else the probablity is one
         else: prob = 1
         #print 'prob',prob
         
+        # If already win or lost, return
         if gameState.isWin() or gameState.isLose() or curDepth == 0:
             return self.evaluationFunction(gameState)
 
         if curAgentIndex == numGhosts:
-            #print legalActions
             for action in legalActions:
                 nextState = gameState.generateSuccessor(curAgentIndex, action)
+                # Get the value by calling min on Pacman index
                 value = self.get_value(nextState, 0, curDepth-1)
+                # Update v
                 v = v + float(prob* value)
-                #print 'v1',v
+
+        # If we havent evaluated all ghosts
         else:
             for action in legalActions:
                 nextState = gameState.generateSuccessor(curAgentIndex, action)
+                # Get the value by calling max on the next ghost index
                 value = self.get_value(nextState, curAgentIndex+1, curDepth)
+                # Update v
                 v = v + float(prob*value)
-                #print 'v', v
+
         return v
 
     def max_value(self, gameState, curAgentIndex, curDepth):
+        # Set v as negative infinity to update later
         v = -(float("inf"))
         legalActions = gameState.getLegalActions(curAgentIndex)
         numGhosts = gameState.getNumAgents() - 1
         
+        # If already win or lost, return
         if gameState.isWin() or gameState.isLose() or curDepth == 0:
             return self.evaluationFunction(gameState)
     
+        # Loop through all the actions
         for action in legalActions:
             nextState = gameState.generateSuccessor(curAgentIndex, action)
+            # Recursive call get_value with the first ghost's curAgentIndex, and update value
             v = max(v, self.get_value(nextState, 1, curDepth))
         return v
 
