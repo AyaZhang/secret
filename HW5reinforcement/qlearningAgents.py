@@ -38,6 +38,7 @@ class QLearningAgent(ReinforcementAgent):
     ReinforcementAgent.__init__(self, **args)
 
     "*** YOUR CODE HERE ***"
+    self.q_values = util.Counter()
 
   def getQValue(self, state, action):
     """
@@ -46,8 +47,10 @@ class QLearningAgent(ReinforcementAgent):
       a state or (state,action) tuple
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    if not self.q_values[(state, action)]:
+      return 0.0
 
+    return self.q_values[(state, action)]
 
   def getValue(self, state):
     """
@@ -57,7 +60,11 @@ class QLearningAgent(ReinforcementAgent):
       terminal state, you should return a value of 0.0.
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    actions = self.getLegalActions(state)
+    if not actions:
+      return 0.0
+
+    return max([self.getQValue(state, i) for i in actions])
 
   def getPolicy(self, state):
     """
@@ -66,7 +73,12 @@ class QLearningAgent(ReinforcementAgent):
       you should return None.
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    actions = self.getLegalActions(state)
+    if not actions:
+      return None
+
+    bests = [i for i in actions if self.getQValue(state, i) == self.getValue(state)]
+    return random.choice(bests)
 
   def getAction(self, state):
     """
@@ -82,8 +94,15 @@ class QLearningAgent(ReinforcementAgent):
     # Pick Action
     legalActions = self.getLegalActions(state)
     action = None
+
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    if not legalActions:
+      return None
+
+    if util.flipCoin(self.epsilon):
+      action = random.choice(legalActions)
+    else:
+      action = self.getPolicy(state)
 
     return action
 
@@ -97,7 +116,10 @@ class QLearningAgent(ReinforcementAgent):
       it will be called on your behalf
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    old_value = self.getQValue(state, action)
+    learned_value = reward + self.discount * self.getValue(nextState)
+
+    self.q_values[(state, action)] = old_value + self.alpha * (learned_value - old_value)
 
 class PacmanQAgent(QLearningAgent):
   "Exactly the same as QLearningAgent, but with different default parameters"
